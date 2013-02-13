@@ -13,6 +13,20 @@ struct CRGB leds_a[13][13];
 #define PIN 4
 #define MODES 5
 #define VALS_PER_MODES 255/MODES
+
+uint8_t logo[] = {0,0,0,0,1,1,1,1,1,0,0,0,0,
+0,0,0,1,0,0,0,0,0,1,0,0,0,
+0,0,0,1,0,1,1,1,0,1,0,0,0,
+0,0,0,1,0,0,1,0,0,1,0,0,0,
+0,0,0,0,1,0,0,0,1,0,0,0,0,
+0,0,0,0,0,1,0,0,0,0,0,0,0,
+0,0,0,0,0,0,1,0,0,0,0,0,0,
+0,0,0,0,1,0,0,1,0,0,0,0,0,
+0,0,0,1,0,0,1,0,0,1,0,0,0,
+0,0,0,1,0,1,1,1,0,1,0,0,0,
+0,0,0,1,0,0,0,0,0,1,0,0,0,
+0,0,0,0,1,1,1,1,1,0,0,0,0};
+
 void interleave(){
   char temp;
   for(int row=1; row < NUM_LEDS/WIDTH; row += 2) {
@@ -53,142 +67,23 @@ int toggle=0;
 uint8_t dimm = analogRead(2)>>2;
 void loop() { 
   
-  int mode=analogRead(1)>>2;
-  memset(leds,0,NUM_LEDS);
-dimm = analogRead(2)>>2;
-  
-  if(mode<VALS_PER_MODES){
-	 memset(leds,0,13*13*3);
-      
-       
-         if(toggle){
-           for(int k=0 ; k< NUM_LEDS/2+1; k++){
-           leds[k].r=dimm;
-           leds[k].g=0;
-           leds[k+NUM_LEDS/2].g=dimm;
-           leds[k+NUM_LEDS/2].r=0;
-           toggle=0;
-           }
-         }else{
-           for(int k=0 ; k< NUM_LEDS/2+1; k++){
-           leds[k].g=dimm;
-           leds[k].r=0;
-           leds[k+NUM_LEDS/2].r=dimm;
-           leds[k+NUM_LEDS/2].g=0;
-           toggle=1;
-         }
-         }
-      
-         
-  }else if(mode>=VALS_PER_MODES && mode <VALS_PER_MODES*2){
-	 memset(leds,0,13*13*3);
-    if(toggle){
-           for(int k=0 ; k< NUM_LEDS; k++){
-           if(k&1){
-             leds[k].r=dimm;
-             leds[k].g=0;
-           }else{
-             leds[k].g=dimm;
-             leds[k].r=0;
-           }
-           toggle=0;
-           }
-         }else{
-           for(int k=0 ; k< NUM_LEDS; k++){
-             if(k&1){
-               leds[k].g=dimm;
-               leds[k].r=0;
-             }else{
-               leds[k].r=dimm;
-               leds[k].g=0;
-             }
-           toggle=1;
-         }
-         }
-  }else if(mode>=VALS_PER_MODES*2 && mode <VALS_PER_MODES*3){
-	 memset(leds,0,13*13*3);
-    if(toggle){
-           for(int k=0 ; k< NUM_LEDS; k++){
-           if(k&1){
-             leds[k].r=0;
-             leds[k].g=0;
-           }else{
-             leds[k].g=0;
-             leds[k].r=dimm;
-           }
-           toggle=0;
-           }
-         }else{
-           for(int k=0 ; k< NUM_LEDS; k++){
-             if(k&1){
-               leds[k].g=dimm;
-               leds[k].r=0;
-             }else{
-               leds[k].r=0;
-               leds[k].g=0;
-             }
-           toggle=1;
-         }
-         }
-  }else if(mode>=VALS_PER_MODES*3 && mode <VALS_PER_MODES*4){
-	 memset(leds,0,13*13*3);
-    if(toggle){
-      for(int k=0 ; k< NUM_LEDS; k++){
-             
-               leds[k].b=dimm;
-               leds[k].r=0;
-    }    
-          
-      toggle=0;
-    }else{
-    for(int k=0 ; k< NUM_LEDS; k++){
-             
-               leds[k].r=dimm;
-               leds[k].b=0;
-    }    
-           toggle=1;
+  //int mode=analogRead(1)>>2;
+  //memset(leds,0,NUM_LEDS);
+  //dimm = analogRead(2)>>2;
+  for(uint8_t i=0; i < NUM_LEDS; i++) {
+    if(logo[i]) {
+      leds[i].r = 0xff;
+      leds[i].g = 0xff;
+      leds[i].b = 0xff;
     }
-  }else if(mode>=VALS_PER_MODES*4 && mode<VALS_PER_MODES*5 ){
-  	 static int8_t uline=4, bar=5;
-		
-	 memset(leds,0,13*13*3);
-	 for(uint8_t i=uline;i<uline+bar;i++){
-		if(uline%4){
-			leds[uline*WIDTH+i].r=dimm;
-			leds[i*WIDTH+uline].r=dimm;
-            if(uline!=6){
-				leds[(uline+bar-1)*WIDTH+i].r=dimm;
-				leds[i*WIDTH +uline+bar-1].r=dimm;
-						  
-				leds[(uline+1)*WIDTH+i].r=dimm;
-				leds[i*WIDTH+uline+1].r=dimm;
-				leds[(uline+bar-2)*WIDTH+i].r=dimm;
-				leds[i*WIDTH +uline+bar-2].r=dimm;
-            }
-		}else{
-			leds[uline*WIDTH+i].g=dimm;
-			leds[i*WIDTH+uline].g=dimm;
-			leds[(uline+bar-1)*WIDTH+i].g=dimm;
-			leds[i*WIDTH +uline+bar-1].g=dimm;
-                      
-			leds[(uline+1)*WIDTH+i].g=dimm;
-			leds[i*WIDTH+uline+1].g=dimm;
-			leds[(uline+bar-2)*WIDTH+i].g=dimm;
-			leds[i*WIDTH +uline+bar-2].g=dimm;
-                       
-		}
-	 }
-	bar+=4;
-	uline-=2;
-	if(uline<0){
-	 	 uline=6;
-	 	 bar=1;
-	}
-  }else if(mode>=VALS_PER_MODES*5){
-		
+    else {
+      leds[i].r = 0;
+      leds[i].g = 0;
+      leds[i].b = 0;
+    }
   }
-
-  
+ 
+ interleave(); 
   FastSPI_LED.show();
   delay(analogRead(0));
   
