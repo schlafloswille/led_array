@@ -97,15 +97,17 @@ void loop() {
     interleave();
   }
   interleave(); 
-  if(*up < 0xff) {
-    (*up)++;
-    (*down)--;
-  }
-  else {
-    uint8_t *tmp = up;
-    up = els;
-    els = down;
-    down = tmp;
+  for(uint8_t u=0; u < 15; u++) {
+    if(*up < 0xff) {
+      (*up)++;
+      (*down)--;
+    }
+    else {
+      uint8_t *tmp = up;
+      up = els;
+      els = down;
+      down = tmp;
+    }
   }
   
   leds[trace_x[p] + WIDTH * trace_y[p]].r = ((uint32_t) cr * dimm) / 0xff;
